@@ -1,23 +1,108 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+
+import {
+  Button,
+  Card,
+  CardContent,
+  Grid,
+  TextField,
+  Typography,
+} from "@mui/material";
+
+import { inputFormElements } from "./element/formElement";
+import { Formik, Field, Form, ErrorMessage } from "formik";
+import * as Yup from 'yup'
 
 function App() {
+
+  const initialValues = {
+    firstName:'',
+    lastName:'',
+    phone:'',
+    banktName:'',
+    ifsc:'',
+    accountNumber:''
+  }
+
+
+  const validationSchema=Yup.object().shape({
+    firstName: Yup.string().min(3,'too short').required("First name is required"),
+    lastName: Yup.string().min(3,'too short').required("Last name is required"),
+    phone: Yup.number().typeError('Enter valid phone Number').min(6000000000).max(9999999999).required('Phone number required'),
+    banktName: Yup.string().min(3,'too short').required("Bank name is required"),
+    ifsc: Yup.string().min(10).max(15).required("IFSC code required"),
+    accountNumber: Yup.number().typeError('Enter valid a/c Number').min(10000000000000).max(99999999999999).required('14 digit a/c number required'),
+
+  })
+
+
+  const onSubmit =(values,props) => {
+   console.log(values);
+  //  console.log(props);
+   setTimeout(()=>{
+    props.resetForm()
+    props.setSubmitting(false)
+   },1000)
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {/* <Typography gutterBottom variant="h4" align="center">
+        Contact Form
+      </Typography> */}
+      <Card style={{ maxWidth: 450, margin: "0 auto", padding: "25px 10px" }}>
+        <CardContent>
+          <Typography gutterBottom variant="h5">
+            Contact Us
+          </Typography>
+          <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
+            {(props) => (
+              <Form>
+                <Typography variant="body2" align="left" gutterBottom>
+                  Personal :
+                </Typography>
+
+                <Grid container spacing={1}>
+                  {inputFormElements.map((input,index) => {
+                    return (input.type==='personal' && input.isdisplable) ?
+                    (
+                    <Grid key={index} xs={input.xs} sm={input.sm} item>
+                      <Field as={TextField} helperText={<ErrorMessage name={input.name}/>} {...input} />
+                    </Grid>
+                  ) : null}
+                  )}
+                </Grid>
+
+                <Typography variant="body2" align="left" gutterBottom>
+                  Banking :
+                </Typography>
+                <Grid container spacing={1}>
+                  {inputFormElements.map((input,index) => {
+                    return (input.type==='banking' && input.isdisplable) ?
+                    (
+                    <Grid key={index} xs={input.xs} sm={input.sm} item>
+                      <Field as={TextField} helperText={<ErrorMessage name={input.name}/>} {...input} />
+                    </Grid>
+                  ): null}
+                  )}
+
+                  <Grid xs={12} item>
+                    <Button
+                      type="submit"
+                      varient="container"
+                      color="primary"
+                      disabled={props.isSubmitting}
+                      fullWidth
+                    >
+                      {props.isSubmitting? "Loading": "Submit"}
+                    </Button>
+                  </Grid>
+                </Grid>
+              </Form>
+            )}
+          </Formik>
+        </CardContent>
+      </Card>
     </div>
   );
 }
