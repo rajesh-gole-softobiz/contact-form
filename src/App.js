@@ -9,36 +9,73 @@ import {
   Typography,
 } from "@mui/material";
 
-import { inputFormElements } from "./element/formElement";
+// import { inputFormElements } from "./element/formElement";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from 'yup'
+// import validationSchema from './schema/yupSchema'
+import { useEffect, useState } from "react";
+import axios from 'axios'
 
 function App() {
 
-  const initialValues = {
-    firstName:'',
-    lastName:'',
-    phone:'',
-    banktName:'',
-    ifsc:'',
-    accountNumber:''
-  }
+  const [inputFormElements, setData] = useState([])
+
+  useEffect(()=> {
+    axios.get('http://localhost:3006/inputFormElements')
+        .then(res => {
+            console.log(res);
+            setData(res.data)
+        })
+        .catch(err => {
+            console.log(err);
+        })
+  },[])
 
 
-  const validationSchema=Yup.object().shape({
-    firstName: Yup.string().min(3,'too short').required("First name is required"),
-    lastName: Yup.string().min(3,'too short').required("Last name is required"),
-    phone: Yup.number().typeError('Enter valid phone Number').min(6000000000).max(9999999999).required('Phone number required'),
-    banktName: Yup.string().min(3,'too short').required("Bank name is required"),
-    ifsc: Yup.string().min(10).max(15).required("IFSC code required"),
-    accountNumber: Yup.number().typeError('Enter valid a/c Number').min(10000000000000).max(99999999999999).required('14 digit a/c number required'),
+const validationGenerator = () => {
+    const validateObj = {}
+    inputFormElements.map(field =>{
+        field.required && field.isdisplable && Object.assign(validateObj, {
+            [field.name]: Yup.string().required('Required')
+        })
+    })
+    return validateObj
+}
+const validationSchema = Yup.object().shape({
+  ...validationGenerator()
+})
 
-  })
+const initialValues = () => {
+  const initialValue = {}
+  inputFormElements.map(elemnt => Object.assign(initialValue,{
+    [elemnt.name]:''
+  }))
+  return initialValue
+}
+
+  // const initialValues = {
+  //   firstName:'',
+  //   lastName:'',
+  //   phone:'',
+  //   banktName:'',
+  //   ifsc:'',
+  //   accountNumber:''
+  // }
+
+  // const validationSchema=Yup.object().shape({
+  //   firstName: Yup.string().min(3,'too short').required("First name is required"),
+  //   lastName: Yup.string().min(3,'too short').required("Last name is required"),
+  //   phone: Yup.number().typeError('Enter valid phone Number').min(6000000000).max(9999999999).required('Phone number required'),
+  //   banktName: Yup.string().min(3,'too short').required("Bank name is required"),
+  //   ifsc: Yup.string().min(10).max(15).required("IFSC code required"),
+  //   accountNumber: Yup.number().typeError('Enter valid a/c Number').min(10000000000000).max(99999999999999).required('14 digit a/c number required'),
+
+  // })
 
 
   const onSubmit =(values,props) => {
    console.log(values);
-  //  console.log(props);
+  //  console.log("my-props",props);
    setTimeout(()=>{
     props.resetForm()
     props.setSubmitting(false)
@@ -64,7 +101,7 @@ function App() {
 
                 <Grid container spacing={1}>
                   {inputFormElements.map((input,index) => {
-                    return (input.type==='personal' && input.isdisplable) ?
+                    return (input.type==='personal' && input.isdisplable) ? 
                     (
                     <Grid key={index} xs={input.xs} sm={input.sm} item>
                       <Field as={TextField} helperText={<ErrorMessage name={input.name}/>} {...input} />

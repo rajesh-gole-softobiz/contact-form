@@ -6,8 +6,8 @@ export const inputFormElements=[
         label: "First Name",
         varient: "outlined",
         fullWidth: true,
-        required: true,
-        isdisplable: "true",
+        required: false,
+        isdisplable: true,
         xs: 12,
         sm: 6
     },
@@ -19,7 +19,7 @@ export const inputFormElements=[
         varient: "outlined",
         fullWidth: true,
         required: true,
-        isdisplable: "true",
+        isdisplable: true,
         xs: 12,
         sm: 6
     },
@@ -31,7 +31,7 @@ export const inputFormElements=[
         varient: "outlined",
         fullWidth: true,
         required: true,
-        isdisplable: "true",
+        isdisplable: true,
         xs: 12,
         
     },
@@ -44,7 +44,7 @@ export const inputFormElements=[
         varient: "outlined",
         fullWidth: true,
         required: true,
-        isdisplable: "true",
+        isdisplable: true,
         xs: 12,
         sm: 6
     },
@@ -56,7 +56,7 @@ export const inputFormElements=[
         varient: "outlined",
         fullWidth: true,
         required: true,
-        isdisplable: "true",
+        isdisplable: true,
         xs: 12,
         sm: 6
     },
@@ -68,7 +68,7 @@ export const inputFormElements=[
         varient: "outlined",
         fullWidth: true,
         required: true,
-        isdisplable: "true",
+        isdisplable: true,
         xs: 12,
         
     }
